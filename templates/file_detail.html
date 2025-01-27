@@ -1,0 +1,20 @@
+{% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+<h1>File Details</h1>
+
+<ul>
+    <li><strong>Title:</strong> {{ files.title }}</li>
+    <li><strong>File Size:</strong> {{ files.size }} bytes</li>
+    <li><strong>Uploaded At:</strong> {{ files.created_at }}</li>
+    <li><strong>File URL:</strong> <a href="{{ file.file.url }}" download>Watch Now</a></li>
+</ul> 
+
+<a href="{% url 'file_list_fbv' %}">Back to File List</a>

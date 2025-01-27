@@ -1,0 +1,24 @@
+{% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+<h1>File List</h1>
+<!-- Form for retrieving files -->
+<ul>
+    {% for file in files %}
+        <li>{{ file.title }} - <a href="{{ file.file.url }}">Watch Now</a></li>
+    {% endfor %}
+</ul>
+
+<h1>Upload File</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
