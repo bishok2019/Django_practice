@@ -1,7 +1,7 @@
 # views.py
 from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView,TemplateView, DetailView, CreateView, UpdateView, DeleteView
 from .models import UploadedFile
 from .forms import UploadedFileForm
 from django.contrib import messages
@@ -15,9 +15,15 @@ class CustomMessageMixin:
     messages = 'Hello'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        messages.info(self.request, self.messages)
+        context = kwargs
+        if self.messages:
+            messages.info(self.request, self.messages)
         return context
+    # def get_context_data(self, **kwargs):
+    #     context = kwargs or{}
+    #     if self.messages:
+    #         messages.info(self.request, self.messages)
+    #     return context
     
     # def dispatch(self, request, *args, **kwargs):
     #     if self.messages:
@@ -28,13 +34,18 @@ class FileView(CustomMessageMixin,LoginRequiredMixin,View):
     template_name = 'file_list.html'
     login_url = 'login'
     messages = 'Welcome to file view'
-    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
     def get(self, request):
         files = UploadedFile.objects.all()
         form = UploadedFileForm()
         context = self.get_context_data()
-
-        return render(request, self.template_name, {'files': files, 'form': form},context)
+        context.update({'files': files, 'form': form})
+        return render(request, self.template_name, context)
+        # return render(request, self.template_name, context,{'files': files, 'form': form}) # render doesnot work for more than 3 arguments
     
     def post(self, request):
         form = UploadedFileForm(request.POST, request.FILES)
