@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from class_basesd_views.views import FileView
 
 urlpatterns = [
     path('files/', views.file_list, name='file_list_fbv'),
@@ -7,4 +8,6 @@ urlpatterns = [
     path('files/<int:file_id>/', views.file_detail, name='file_detail_fbv'),
     path('files/<int:pk>/update/', views.file_update, name='file_update_fbv'),
     path('files/<int:pk>/delete/', views.file_delete, name='file_delete_fbv'),
+    # path('fileview/', FileView.as_view(), name='file_list_view'),
+
 ]
