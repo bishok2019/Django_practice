@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fish-Like Dragon Skeleton</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #f0f0f0; /* Light gray background */
+      /* cursor: none; */ /* Uncomment to hide the cursor */
+    }
+
+    .skeleton {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .bone {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: red; /* Red color for visibility */
+      border-radius: 50%;
+    }
+
+    .line {
+      position: absolute;
+      width: 2px;
+      background-color: blue; /* Blue color for visibility */
+      transform-origin: 0 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="skeleton"></div>
+
+  <script>
+    const NUM_BONES = 10;
+    const skeleton = document.querySelector('.skeleton');
+    const bones = [];
+    const lines = [];
+
+    for (let i = 0; i < NUM_BONES; i++) {
+      const bone = document.createElement('div');
+      bone.classList.add('bone');
+      skeleton.appendChild(bone);
+      bones.push(bone);
+
+      if (i > 0) {
+        const line = document.createElement('div');
+        line.classList.add('line');
+        skeleton.appendChild(line);
+        lines.push(line);
+      }
+    }
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+
+    document.addEventListener('mousemove', (event) => {
+      mouseX = event.clientX;
+      mouseY = event.clientY;
+    });
+
+    function animate() {
+      bones.forEach((bone, index) => {
+        const prevBone = bones[index - 1] || null;
+
+        if (prevBone) {
+          const prevRect = prevBone.getBoundingClientRect();
+          const prevX = prevRect.left + prevRect.width / 2;
+          const prevY = prevRect.top + prevRect.height / 2;
+
+          const lerpX = bone.offsetLeft + (prevX - bone.offsetLeft) * 0.1;
+          const lerpY = bone.offsetTop + (prevY - bone.offsetTop) * 0.1;
+
+          bone.style.left = `${lerpX}px`;
+          bone.style.top = `${lerpY}px`;
+
+          const line = lines[index - 1];
+          const dx = prevX - bone.offsetLeft;
+          const dy = prevY - bone.offsetTop;
+          const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+          const length = Math.hypot(dx, dy);
+
+          line.style.left = `${bone.offsetLeft + bone.offsetWidth / 2}px`;
+          line.style.top = `${bone.offsetTop + bone.offsetHeight / 2}px`;
+          line.style.width = `${length}px`;
+          line.style.transform = `rotate(${angle}deg)`;
+        } else {
+          const lerpX = bone.offsetLeft + (mouseX - bone.offsetLeft) * 0.1;
+          const lerpY = bone.offsetTop + (mouseY - bone.offsetTop) * 0.1;
+
+          bone.style.left = `${lerpX}px`;
+          bone.style.top = `${lerpY}px`;
+        }
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
